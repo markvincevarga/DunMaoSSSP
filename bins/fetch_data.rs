@@ -1,10 +1,9 @@
-use bincode::config::{self, Config};
 use fast_sssp::Graph;
 use flate2::read::GzDecoder;
 use log::info;
 use reqwest::blocking::Client;
 use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Read, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::path::Path;
 
 const WIKI_TALK_URL: &str = "https://snap.stanford.edu/data/wiki-Talk.txt.gz";
@@ -64,8 +63,8 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
         }
 
         let parts: Vec<&str> = line.split_whitespace().collect();
-        if parts.len() >= 2 {
-            if let (Ok(u), Ok(v)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
+        if parts.len() >= 2
+            && let (Ok(u), Ok(v)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
                 edges.push((u, v));
                 max_node = max_node.max(u).max(v);
                 line_count += 1;
@@ -74,7 +73,6 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
                     println!("Parsed {} edges...", line_count);
                 }
             }
-        }
     }
 
     println!("Found {} edges, max node ID: {}", edges.len(), max_node);
