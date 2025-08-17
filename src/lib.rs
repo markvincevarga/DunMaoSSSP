@@ -1,16 +1,20 @@
 use std::cmp::{Ordering, Reverse};
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::f64;
+use std::fs::File;
+use std::io::{BufReader, BufWriter};
+use std::path::Path;
 
+use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Decode, Encode)]
 pub struct Edge {
     pub to: usize,
     pub weight: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Decode, Encode)]
 pub struct Graph {
     pub vertices: usize,
     pub edges: Vec<Vec<Edge>>,
@@ -30,6 +34,24 @@ impl Graph {
 
     pub fn edge_count(&self) -> usize {
         self.edges.iter().map(|adj| adj.len()).sum()
+    }
+
+    pub fn from_file(path: &Path) -> Result<Graph, Box<dyn std::error::Error>> {
+        let file = File::open(path)?;
+        let config = bincode::config::legacy();
+        let reader = BufReader::new(file);
+        let graph = bincode::decode_from_reader(reader, config)?;
+        Ok(graph)
+    }
+
+    pub fn to_file(graph: &Graph, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+        let file = File::create(path)?;
+        let config = bincode::config::legacy();
+        let mut writer = BufWriter::new(file);
+
+        bincode::serde::encode_into_std_write(graph, &mut writer, config)?;
+
+        Ok(())
     }
 }
 

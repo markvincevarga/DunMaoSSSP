@@ -1,16 +1,7 @@
-use bincode;
-use std::fs::File;
 use std::path::Path;
 use std::time::Instant;
 
 use fast_sssp::{Graph, SSSpSolver};
-
-fn load_graph(path: &Path) -> Result<Graph, Box<dyn std::error::Error>> {
-    println!("Loading graph from {}...", path.display());
-    let file = File::open(path)?;
-    let graph: Graph = bincode::deserialize(file)?;
-    Ok(graph)
-}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data_path = Path::new("data/wiki-talk-graph.bin");
@@ -22,7 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     println!("Loading Wiki-Talk dataset...");
-    let graph = load_graph(data_path)?;
+    let graph = Graph::from_file(data_path)?;
 
     println!(
         "Graph loaded: {} vertices, {} edges",
@@ -48,7 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Benchmark Dijkstra
         let start = Instant::now();
         let mut solver1 = SSSpSolver::new(graph.clone());
-        let _distances1 = solver1.solve_with_dijkstra(source);
+        let _distances1 = solver1.dijkstra(source);
         let dijkstra_time = start.elapsed().as_millis();
 
         // Benchmark new algorithm

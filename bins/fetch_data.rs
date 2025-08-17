@@ -1,9 +1,10 @@
+use bincode::config::{self, Config};
 use fast_sssp::Graph;
 use flate2::read::GzDecoder;
 use log::info;
 use reqwest::blocking::Client;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Write};
+use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::path::Path;
 
 const WIKI_TALK_URL: &str = "https://snap.stanford.edu/data/wiki-Talk.txt.gz";
@@ -99,20 +100,6 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
     Ok(graph)
 }
 
-fn save_graph(graph: &Graph, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    info!("Serializing graph to {}...", path.display());
-    let file = File::create(path)?;
-    bincode::serialize_into(file, graph)?;
-    Ok(())
-}
-
-fn load_graph(path: &Path) -> Result<Graph, Box<dyn std::error::Error>> {
-    info!("Loading graph from {}...", path.display());
-    let file = File::open(path)?;
-    let graph = bincode::deserialize_from(file)?;
-    Ok(graph)
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
@@ -132,7 +119,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
 
         // Try to load and verify
-        match load_graph(&output_path) {
+        match Graph::from_file(&output_path) {
             Ok(graph) => {
                 println!(
                     "Successfully loaded graph with {} vertices and {} edges",
@@ -162,7 +149,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let graph = parse_wiki_talk_to_graph(&wiki_talk_path)?;
 
     // Save processed graph
-    save_graph(&graph, &output_path)?;
+    Graph::to_file(&graph, &output_path)?;
 
     println!("Successfully processed Wiki-Talk dataset!");
     println!(
