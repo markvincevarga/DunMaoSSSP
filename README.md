@@ -84,6 +84,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## TODOs:
 
+- \[\] workspace & feature flag deps like `serde` etc
 - \[\] bring in some other libraries that have a Djikstra in them, and bench against this.
 - \[\] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..
 - \[\] actually run some of this on some of the [usual graph performance measuring datasets](https://snap.stanford.edu/data/)
