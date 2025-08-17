@@ -36,6 +36,7 @@ cargo test -- --nocapture
 ### Benchmarking:
 
 #### Get data:
+
 ```bash
 cargo run --release --bin fetch_data # Will download the wikipedia-talk dataset for you
 ```
@@ -49,7 +50,9 @@ cargo run --release --example wiki_talk # It'll error out if you don't have the 
 Figures are from my ancient 2013 Macbook Pro with an Intel i7-4960HQ and 16GB od DDR3 (garbage machine I know...)
 
 #### Real-World:
-_ Wiki-Talk _
+
+\_ Wiki-Talk \_
+
 ```sh
 Benchmarking on Wiki-Talk dataset:
 Source   Dijkstra (ms)   New Algo (ms)   Sp          
@@ -108,4 +111,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - \[\] workspace & feature flag deps like `serde` etc to clean up deps
 - \[\] bring in some other libraries that have a Djikstra in them, and bench against this.
 - \[\] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..
-
