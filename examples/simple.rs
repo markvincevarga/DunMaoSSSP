@@ -1,6 +1,6 @@
 fn main() {
     // Create a larger graph to showcase the new algorithm
-    let mut graph = Graph::new(25);
+    let mut graph = fast_sssp::Graph::new(25);
 
     // Create a more complex graph structure
     for i in 0..24 {
@@ -16,12 +16,12 @@ fn main() {
     graph.add_edge(12, 3, 8.0);
     graph.add_edge(18, 7, 6.0);
 
-    let mut solver = SSSpSolver::new(graph);
+    let mut solver = fast_sssp::SSSpSolver::new(graph);
     let distances = solver.solve(0);
 
     println!("Shortest distances from vertex 0 (using new O(m log^(2/3) n) algorithm):");
     for (i, &dist) in distances.iter().enumerate() {
-        if dist == INFINITY {
+        if dist == std::f64::INFINITY {
             println!("  {} -> ∞", i);
         } else {
             println!("  {} -> {:.1}", i, dist);

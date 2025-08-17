@@ -1,6 +1,6 @@
 use std::cmp::{Ordering, Reverse};
 use std::collections::{BinaryHeap, HashMap, HashSet};
-use std::f64::INFINITY;
+use std::f64;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Edge {
@@ -71,7 +71,7 @@ impl SSSpSolver {
         let t = ((n as f64).ln().powf(2.0 / 3.0)).floor() as usize;
 
         SSSpSolver {
-            distances: vec![INFINITY; n],
+            distances: vec![f64::INFINITY; n],
             predecessors: vec![None; n],
             complete: vec![false; n],
             graph,
@@ -92,14 +92,14 @@ impl SSSpSolver {
         let max_level = ((self.graph.vertices as f64).ln() / self.t as f64).ceil() as usize;
         let frontier = vec![source];
 
-        let (_, _result) = self.bmssp(max_level, INFINITY, frontier);
+        let (_, _result) = self.bmssp(max_level, f64::INFINITY, frontier);
 
         // Mark all reachable vertices as complete
-        for i in 0..self.graph.vertices {
-            if self.distances[i] != INFINITY {
+        (0..self.graph.vertices).for_each(|i| {
+            if self.distances[i] != f64::INFINITY {
                 self.complete[i] = true;
             }
-        }
+        });
 
         self.distances.clone()
     }
@@ -123,7 +123,7 @@ impl SSSpSolver {
 
             self.complete[u] = true;
 
-            for edge in &self.graph.edges[u] {
+            self.graph.edges[u].iter().for_each(|edge| {
                 let v = edge.to;
                 let new_dist = dist + edge.weight;
 
@@ -135,7 +135,7 @@ impl SSSpSolver {
                         distance: new_dist,
                     }));
                 }
-            }
+            });
         }
 
         self.distances.clone()
@@ -161,18 +161,18 @@ impl SSSpSolver {
         let mut data_structure = AdaptiveDataStructure::new(capacity, bound);
 
         // Insert pivots into data structure
-        for &pivot in &pivots {
-            if self.distances[pivot] != INFINITY {
+        pivots.iter().for_each(|&pivot| {
+            if self.distances[pivot] != f64::INFINITY {
                 data_structure.insert(pivot, self.distances[pivot]);
             }
-        }
+        });
 
         let mut result_set = Vec::new();
         let mut current_bound = pivots
             .iter()
-            .filter(|&&v| self.distances[v] != INFINITY)
+            .filter(|&&v| self.distances[v] != f64::INFINITY)
             .map(|&v| self.distances[v])
-            .fold(INFINITY, f64::min);
+            .fold(f64::INFINITY, f64::min);
 
         let max_result_size = self.k * 2_usize.pow((level * self.t).min(20) as u32);
 
@@ -190,12 +190,12 @@ impl SSSpSolver {
             // Relax edges from newly completed vertices
             let mut batch_prepend_list = Vec::new();
 
-            for &u in &sub_result {
+            sub_result.iter().for_each(|&u| {
                 if !self.complete[u] {
                     self.complete[u] = true;
                 }
 
-                for edge in &self.graph.edges[u] {
+                self.graph.edges[u].iter().for_each(|edge| {
                     let v = edge.to;
                     let new_dist = self.distances[u] + edge.weight;
 
@@ -209,8 +209,8 @@ impl SSSpSolver {
                             batch_prepend_list.push((v, new_dist));
                         }
                     }
-                }
-            }
+                });
+            });
 
             // Batch prepend operation
             data_structure.batch_prepend(batch_prepend_list);
@@ -222,12 +222,12 @@ impl SSSpSolver {
         }
 
         // Add remaining complete vertices from working set
-        for &v in &working_set {
+        working_set.iter().for_each(|&v| {
             if self.distances[v] < current_bound && !result_set.contains(&v) {
                 result_set.push(v);
                 self.complete[v] = true;
             }
-        }
+        });
 
         (current_bound, result_set)
     }
@@ -241,16 +241,16 @@ impl SSSpSolver {
         let mut heap = BinaryHeap::new();
         let mut result = Vec::new();
 
-        // Initialize heap with frontier vertices
-        for &start in &frontier {
-            if self.distances[start] != INFINITY {
+        // Initialise heap with frontier vertices
+        frontier.iter().for_each(|&start| {
+            if self.distances[start] != f64::INFINITY {
                 heap.push(Reverse(VertexDistance {
                     vertex: start,
                     distance: self.distances[start],
                 }));
                 result.push(start);
             }
-        }
+        });
 
         let mut processed = 0;
         while let Some(Reverse(VertexDistance {
@@ -265,7 +265,7 @@ impl SSSpSolver {
             self.complete[u] = true;
             processed += 1;
 
-            for edge in &self.graph.edges[u] {
+            self.graph.edges[u].iter().for_each(|edge| {
                 let v = edge.to;
                 let new_dist = dist + edge.weight;
 
@@ -280,7 +280,7 @@ impl SSSpSolver {
                         distance: new_dist,
                     }));
                 }
-            }
+            });
         }
 
         // Determine the boundary
@@ -288,7 +288,7 @@ impl SSSpSolver {
             let mut distances: Vec<f64> = result
                 .iter()
                 .map(|&v| self.distances[v])
-                .filter(|&d| d != INFINITY)
+                .filter(|&d| d != f64::INFINITY)
                 .collect();
             distances.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
@@ -304,11 +304,11 @@ impl SSSpSolver {
         };
 
         // Mark result vertices as complete
-        for &v in &result {
-            if self.distances[v] != INFINITY {
+        result.iter().for_each(|&v| {
+            if self.distances[v] != f64::INFINITY {
                 self.complete[v] = true;
             }
-        }
+        });
 
         (max_dist, result)
     }
@@ -322,7 +322,7 @@ impl SSSpSolver {
             let mut next_layer = HashSet::new();
 
             for &u in &current_layer {
-                if self.distances[u] == INFINITY {
+                if self.distances[u] == f64::INFINITY {
                     continue;
                 }
 
@@ -353,18 +353,18 @@ impl SSSpSolver {
         let mut subtree_sizes = HashMap::new();
 
         // Build forest structure based on predecessor relationships
-        for &v in &working_set {
+        working_set.iter().for_each(|&v| {
             if let Some(pred) = self.predecessors[v] {
                 *subtree_sizes.entry(pred).or_insert(0) += 1;
             }
-        }
+        });
 
         // Select pivots with subtree size >= k, or just use frontier if no large subtrees
-        for (&root, &size) in &subtree_sizes {
+        subtree_sizes.iter().for_each(|(&root, &size)| {
             if size >= self.k && frontier.contains(&root) {
                 pivots.push(root);
             }
-        }
+        });
 
         // If no pivots found, use the entire frontier
         if pivots.is_empty() {
@@ -398,9 +398,9 @@ impl AdaptiveDataStructure {
     }
 
     fn batch_prepend(&mut self, items: Vec<(usize, f64)>) {
-        for (vertex, distance) in items {
+        items.into_iter().for_each(|(vertex, distance)| {
             self.insert(vertex, distance);
-        }
+        });
     }
 
     fn pull(&mut self) -> (f64, Vec<usize>) {
@@ -438,10 +438,9 @@ mod tests {
 
     #[test]
     fn test_simple_graph() {
-        // Create a larger graph (15 vertices) to trigger the new algorithm
+        // Create a larger graph (15 vertices), because on <=10 we run Dijkstra per the paper's recommendations.
         let mut graph = Graph::new(15);
 
-        // Create a more complex graph structure
         for i in 0..14 {
             graph.add_edge(i, i + 1, (i + 1) as f64);
             if i > 0 {
@@ -457,13 +456,12 @@ mod tests {
         let distances = solver.solve(0);
 
         assert_eq!(distances[0], 0.0);
-        assert!(distances[1] > 0.0 && distances[1] < INFINITY);
-        assert!(distances[14] > 0.0 && distances[14] < INFINITY);
+        assert!(distances[1] > 0.0 && distances[1] < f64::INFINITY);
+        assert!(distances[14] > 0.0 && distances[14] < f64::INFINITY);
     }
 
     #[test]
     fn test_disconnected_graph() {
-        // Create a larger disconnected graph
         let mut graph = Graph::new(20);
 
         // Connected component 1: vertices 0-9
@@ -480,8 +478,8 @@ mod tests {
         let distances = solver.solve(0);
 
         assert_eq!(distances[0], 0.0);
-        assert!(distances[5] > 0.0 && distances[5] < INFINITY);
-        assert_eq!(distances[15], INFINITY); // Should be unreachable
+        assert!(distances[5] > 0.0 && distances[5] < f64::INFINITY);
+        assert_eq!(distances[15], f64::INFINITY); // Should be unreachable
     }
 
     #[test]

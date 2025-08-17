@@ -1,9 +1,12 @@
 # A Fast SSSP
 
+> BMSSP (Bounded Multi-Source Shortest Path) or? Dun-Mal et al? I dunno what they want to call it.
+
 <!-- [![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://www.rust-lang.org/) -->
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A naive Rust implementation of the _breakthrough?_ deterministic algorithm for Single-Source Shortest Paths (SSSP) that breaks the O(m + n log n) sorting barrier on directed graphs. This is based on the paper ["Breaking the Sorting Barrier for Directed Single-Source Shortest Paths"](https://arxiv.org/abs/2504.17033) by Duan, Mao, Mao, Shu, and Yin (2025). 
+A naive Rust implementation of the _breakthrough?_ deterministic algorithm for Single-Source Shortest Paths (SSSP) that breaks the O(m + n log n) sorting barrier on directed graphs. This is based on the paper ["Breaking the Sorting Barrier for Directed Single-Source Shortest Paths"](https://arxiv.org/abs/2504.17033) by Duan, Mao, Mao, Shu, and Yin (2025).
 
 It achieves **O(m log^(2/3) n)** time complexity for SSSP on directed graphs with real non-negative edge weights in the comparison-addition model.
 
@@ -31,9 +34,11 @@ cargo test -- --nocapture
 > # So... Is it good? -- Yeah, it shows promise!
 
 ### Benchmarking:
+
 ```bash
 cargo run bench
 ```
+
 > 2013 Macbook Pro (garbage machine I know...)
 
 | Benchmark | Best, Avg, Worst | Outliers |
@@ -77,9 +82,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 }
 ``` -->
 
-
-
 ## TODOs:
-- [] bring in some other libraries that have a Djikstra in them, and bench against this.
-- [] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..
-- [] actually run some of this on some of the [usual graph performance measuring datasets](https://snap.stanford.edu/data/)
+
+- \[\] bring in some other libraries that have a Djikstra in them, and bench against this.
+- \[\] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..
+- \[\] actually run some of this on some of the [usual graph performance measuring datasets](https://snap.stanford.edu/data/)
