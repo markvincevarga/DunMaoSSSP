@@ -1,4 +1,4 @@
-#![cfg(all(feature = "flate2", feature = "log", feature = "env_logger", feature = "bincode"))]
+#![cfg(all(feature = "flate2", feature = "bincode"))]
 
 use fast_sssp::Graph;
 use flate2::read::GzDecoder;
@@ -56,7 +56,7 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
     let mut line_count = 0;
 
     // Skip header lines and parse edges
-    for (i, line_result) in reader.lines().enumerate() {
+    for line_result in reader.lines() {
         let line = line_result?;
 
         // Skip comment lines (start with #)
@@ -66,15 +66,16 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
 
         let parts: Vec<&str> = line.split_whitespace().collect();
         if parts.len() >= 2
-            && let (Ok(u), Ok(v)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
-                edges.push((u, v));
-                max_node = max_node.max(u).max(v);
-                line_count += 1;
+            && let (Ok(u), Ok(v)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>())
+        {
+            edges.push((u, v));
+            max_node = max_node.max(u).max(v);
+            line_count += 1;
 
-                if line_count % 100000 == 0 {
-                    println!("Parsed {} edges...", line_count);
-                }
+            if line_count % 100000 == 0 {
+                println!("Parsed {} edges...", line_count);
             }
+        }
     }
 
     println!("Found {} edges, max node ID: {}", edges.len(), max_node);
@@ -83,14 +84,18 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
     let mut graph = Graph::new((max_node + 1) as usize);
 
     println!("Building graph structure...");
-    for (i, (u, v)) in edges.iter().enumerate() {
-        // Add edge with weight 1.0
-        graph.add_edge(*u as usize, *v as usize, 1.0);
+    edges
+        .iter()
+        .enumerate()
+        .into_iter()
+        .for_each(|(i, (u, v))| {
+            // Add edge with weight 1.0
+            graph.add_edge(*u as usize, *v as usize, 1.0);
 
-        if i % 100000 == 0 {
-            println!("Added {} edges to graph...", i);
-        }
-    }
+            if i % 100000 == 0 {
+                println!("Added {} edges to graph...", i);
+            }
+        });
 
     info!(
         "Graph built with {} nodes and {} edges.",

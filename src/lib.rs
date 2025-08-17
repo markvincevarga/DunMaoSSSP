@@ -40,19 +40,22 @@ impl Graph {
     }
 
     #[cfg(feature = "bincode")]
-    pub fn from_file(path: &Path) -> Result<Graph, Box<dyn std::error::Error>> {
-        let file = File::open(path)?;
+    pub fn from_file(path: &std::path::Path) -> Result<Graph, Box<dyn std::error::Error>> {
+        let file = std::fs::File::open(path)?;
         let config = bincode::config::legacy();
-        let reader = BufReader::new(file);
+        let reader = std::io::BufReader::new(file);
         let graph = bincode::decode_from_reader(reader, config)?;
         Ok(graph)
     }
 
     #[cfg(feature = "bincode")]
-    pub fn to_file(graph: &Graph, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
-        let file = File::create(path)?;
+    pub fn to_file(
+        graph: &Graph,
+        path: &std::path::Path,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let file = std::fs::File::create(path)?;
         let config = bincode::config::legacy();
-        let mut writer = BufWriter::new(file);
+        let mut writer = std::io::BufWriter::new(file);
 
         bincode::serde::encode_into_std_write(graph, &mut writer, config)?;
 

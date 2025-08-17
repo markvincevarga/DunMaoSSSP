@@ -21,6 +21,7 @@ name = "fast_sssp"
 
 [features]
 default = []
+full = ["bincode", "serde", "flate2", "log", "env_logger", "reqwest"]
 bincode = ["dep:bincode", "serde"]
 serde = ["dep:serde"]
 flate2 = ["dep:flate2"]
