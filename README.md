@@ -35,11 +35,28 @@ cargo test -- --nocapture
 
 ### Benchmarking:
 
+
 ```bash
-cargo run bench
+cargo run bench # synthetics
+# or
+cargo run --release --example wiki_talk # It'll error out if you don't have the data
 ```
 
-> 2013 Macbook Pro (garbage machine I know...)
+Figures are from my ancient 2013 Macbook Pro with an Intel i7-4960HQ and 16GB od DDR3 (garbage machine I know...)
+
+#### Real-World:
+_ Wiki-Talk _
+```sh
+Benchmarking on Wiki-Talk dataset:
+Source   Dijkstra (ms)   New Algo (ms)   Sp          
+-------------------------------------------------------
+0        102             102             1.00        x
+100      107680          109             987.89      x
+1000     78398           115             681.72      x
+5000     68606           100             686.06      x
+```
+
+#### Synthetics:
 
 | Benchmark | Best, Avg, Worst | Outliers |
 | :--- | :--- | :--- |

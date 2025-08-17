@@ -25,8 +25,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let test_sources = vec![0, 100, 1000, 5000];
 
     println!("\nBenchmarking on Wiki-Talk dataset:");
+    /*
+        2_394_385 vertices, 5_021_410 edges
+    */
     println!(
-        "{:<8} {:<15} {:<15} {:<12}",
+        "{:<8} {:<15} {:<15} {:<12.2}",
         "Source", "Dijkstra (ms)", "New Algo (ms)", "Speedup"
     );
     println!("{}", "-".repeat(55));
