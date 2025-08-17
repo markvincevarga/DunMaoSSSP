@@ -1,3 +1,5 @@
+#![cfg(all(feature = "flate2", feature = "log", feature = "env_logger", feature = "bincode"))]
+
 use fast_sssp::Graph;
 use flate2::read::GzDecoder;
 use log::info;

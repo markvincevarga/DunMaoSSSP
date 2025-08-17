@@ -1,20 +1,23 @@
 use std::cmp::{Ordering, Reverse};
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::f64;
-use std::fs::File;
-use std::io::{BufReader, BufWriter};
-use std::path::Path;
 
+#[cfg(feature = "bincode")]
 use bincode::{Decode, Encode};
+#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Decode, Encode)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "bincode", derive(Decode, Encode))]
 pub struct Edge {
     pub to: usize,
     pub weight: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Decode, Encode)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "bincode", derive(Decode, Encode))]
 pub struct Graph {
     pub vertices: usize,
     pub edges: Vec<Vec<Edge>>,
@@ -36,6 +39,7 @@ impl Graph {
         self.edges.iter().map(|adj| adj.len()).sum()
     }
 
+    #[cfg(feature = "bincode")]
     pub fn from_file(path: &Path) -> Result<Graph, Box<dyn std::error::Error>> {
         let file = File::open(path)?;
         let config = bincode::config::legacy();
@@ -44,6 +48,7 @@ impl Graph {
         Ok(graph)
     }
 
+    #[cfg(feature = "bincode")]
     pub fn to_file(graph: &Graph, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
         let file = File::create(path)?;
         let config = bincode::config::legacy();
