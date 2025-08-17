@@ -38,13 +38,13 @@ cargo test -- --nocapture
 #### Get data:
 
 ```bash
-cargo run --release --bin fetch_data # Will download the wikipedia-talk dataset for you
+cargo run --release --bin fetch_data -F full # Will download the wikipedia-talk dataset for you
 ```
 
 ```bash
 cargo run bench # synthetics
 # or
-cargo run --release --example wiki_talk # It'll error out if you don't have the data
+cargo run --release --example wiki_talk_benchmark -F bincode # It'll error out if you don't have the data
 ```
 
 Figures are from my ancient 2013 Macbook Pro with an Intel i7-4960HQ and 16GB od DDR3 (garbage machine I know...)
@@ -109,5 +109,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## TODOs:
 
 - \[\] workspace & feature flag deps like `serde` etc to clean up deps
-- \[\] bring in some other libraries that have a Djikstra in them, and bench against this.
+- \[\] bring in some other libraries that have a Dijkstra in them, and bench against this.
 - \[\] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..

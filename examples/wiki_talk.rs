@@ -1,5 +1,5 @@
-use std::path::Path;
 use std::time::Instant;
+use std::{hint::black_box, path::Path};
 
 use fast_sssp::{Graph, SSSpSolver};
 
@@ -21,18 +21,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         graph.edge_count()
     );
 
-    // Test on a subset of source vertices
-    let test_sources = vec![0, 100, 1000, 5000];
+    println!(
+        "\nNote: This is a real-world directed graph with {} vertices and {} edges",
+        graph.vertices,
+        graph.edge_count()
+    );
 
     println!("\nBenchmarking on Wiki-Talk dataset:");
     /*
         2_394_385 vertices, 5_021_410 edges
     */
+
     println!(
         "{:<8} {:<15} {:<15} {:<12.2}",
         "Source", "Dijkstra (ms)", "New Algo (ms)", "Speedup"
     );
     println!("{}", "-".repeat(55));
+
+    // Reuse the same graphs for all sssp measures.
+    let mut solver1 = SSSpSolver::new(graph.clone());
+    let mut solver2 = SSSpSolver::new(graph.clone());
+
+    // Test on a subset of source vertices
+    let test_sources = vec![0, 100, 1000, 5000];
 
     for &source in &test_sources {
         if source >= graph.vertices {
@@ -41,15 +52,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Benchmark Dijkstra
         let start = Instant::now();
-        let mut solver1 = SSSpSolver::new(graph.clone());
-        let _distances1 = solver1.dijkstra(source);
+        let distances1 = solver1.dijkstra(source);
         let dijkstra_time = start.elapsed().as_millis();
 
-        // Benchmark new algorithm
+        // VS the new
         let start = Instant::now();
-        let mut solver2 = SSSpSolver::new(graph.clone());
-        let _distances2 = solver2.solve(source);
+        let distances2 = solver2.solve(source);
         let new_algo_time = start.elapsed().as_millis();
+
+        assert_eq!(distances2.len(), distances1.len()); // Should be the same.
+        black_box((_distances1, _distances2)); // JIC rustc tries to be too clever.
 
         let speedup = if new_algo_time > 0 {
             dijkstra_time as f64 / new_algo_time as f64
@@ -63,11 +75,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
 
-    println!(
-        "\nNote: This is a real-world directed graph with {} vertices and {} edges",
-        graph.vertices,
-        graph.edge_count()
-    );
     println!("The new algorithm should show improvements on this scale!");
 
     Ok(())
