@@ -92,7 +92,6 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
     edges
         .iter()
         .enumerate()
-        .into_iter()
         .for_each(|(i, (u, v))| {
             // Add edge with weight 1.0
             graph.add_edge(*u as usize, *v as usize, 1.0);
