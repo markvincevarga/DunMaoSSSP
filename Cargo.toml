@@ -20,8 +20,23 @@ A naive impl of an SSSP algorithm from the 2025 ["Breaking the Sorting Barrier f
 name = "fast_sssp"
 
 [features]
-default = []
-full = ["bincode", "serde", "flate2", "log", "env_logger", "reqwest"]
+default = ["full"]
+hashbrown = ["dep:hashbrown"]
+parallel = ["dep:crossbeam"]
+simd_edge_relaxation = []
+full = [
+    "bincode",
+    "serde",
+    "flate2",
+    "log",
+    "env_logger",
+    "reqwest",
+    "hashbrown",
+    "parallel",
+    # "parallel_pivot",
+    # "parallel_frontier_expansion",
+    # "parallel_edge_relaxation",
+]
 bincode = ["dep:bincode", "serde"]
 serde = ["dep:serde"]
 flate2 = ["dep:flate2"]
@@ -36,15 +51,36 @@ serde = { version = "1.0.219", features = ["derive"], optional = true }
 flate2 = { version = "1.1.2", optional = true }
 log = { version = "0.4.27", optional = true }
 env_logger = { version = "0.11.8", optional = true }
+bit-vec = "0.8.0"
+hashbrown = { version = "0.15.5", features = ["rayon"], optional = true }
+crossbeam = { version = "0.8.4", optional = true }
 
 [dev-dependencies]
 criterion = "0.7.0"
+petgraph = "0.8.2"
 rand = "0.9.2"
 
 [[bench]]
+name = "rome"
 harness = false
-name = "bench"
-path = "benches/sssp_benchmark.rs"
+required-features = ["full"]
+
+[[bench]]
+name = "wiki2"
+harness = false
+required-features = ["full"]
+
+[[bench]]
+name = "livejournal"
+harness = false
+required-features = ["full"]
+
+# The wikipedia graph is SIGNIFICANTLY bigger than the Rome graph, enable and run with caution.
+# [[bench]]
+# name = "wiki"
+# harness = false
+# required-features = ["full"]
+
 
 [[example]]
 name = "wiki_talk_benchmark"

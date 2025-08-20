@@ -1,3 +1,5 @@
+#![cfg(feature = "bincode")]
+
 use std::time::Instant;
 use std::{hint::black_box, path::Path};
 
@@ -28,9 +30,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     println!("\nBenchmarking on Wiki-Talk dataset:");
-    /*
-        2_394_385 vertices, 5_021_410 edges
-    */
 
     println!(
         "{:<8} {:<15} {:<15} {:<12.2}",
@@ -38,11 +37,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     println!("{}", "-".repeat(55));
 
-    // Reuse the same graphs for all sssp measures.
     let mut solver1 = SSSpSolver::new(graph.clone());
     let mut solver2 = SSSpSolver::new(graph.clone());
 
-    // Test on a subset of source vertices
     let test_sources = vec![0, 100, 1000, 5000];
 
     for &source in &test_sources {
@@ -50,18 +47,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             continue;
         }
 
-        // Benchmark Dijkstra
         let start = Instant::now();
-        let distances1 = solver1.dijkstra(source);
+        let distances1 = solver1.dijkstra(source, None);
         let dijkstra_time = start.elapsed().as_millis();
 
-        // VS the new
         let start = Instant::now();
-        let distances2 = solver2.solve(source);
+        let distances2 = solver2.solve_all(source);
         let new_algo_time = start.elapsed().as_millis();
 
-        assert_eq!(distances2.len(), distances1.len()); // Should be the same.
-        black_box((_distances1, _distances2)); // JIC rustc tries to be too clever.
+        assert_eq!(distances2.len(), solver1.solve_all(source).len());
+        black_box((distances1, distances2));
 
         let speedup = if new_algo_time > 0 {
             dijkstra_time as f64 / new_algo_time as f64

@@ -34,7 +34,7 @@ fn download_file(client: &Client, url: &str, path: &str) -> Result<(), Box<dyn s
         file.write_all(&buffer[..n])?;
         downloaded += n as u64;
 
-        if downloaded % (1024 * 1024) == 0 {
+        if downloaded.is_multiple_of(1024 * 1024) {
             println!(
                 "Downloaded: {:.1} MB",
                 downloaded as f64 / (1024.0 * 1024.0)
@@ -89,17 +89,14 @@ fn parse_wiki_talk_to_graph(gz_path: &Path) -> Result<Graph, Box<dyn std::error:
     let mut graph = Graph::new((max_node + 1) as usize);
 
     println!("Building graph structure...");
-    edges
-        .iter()
-        .enumerate()
-        .for_each(|(i, (u, v))| {
-            // Add edge with weight 1.0
-            graph.add_edge(*u as usize, *v as usize, 1.0);
+    edges.iter().enumerate().for_each(|(i, (u, v))| {
+        // Add edge with weight 1.0
+        graph.add_edge(*u as usize, *v as usize, 1.0);
 
-            if i % 100000 == 0 {
-                println!("Added {} edges to graph...", i);
-            }
-        });
+        if i % 100000 == 0 {
+            println!("Added {} edges to graph...", i);
+        }
+    });
 
     info!(
         "Graph built with {} nodes and {} edges.",

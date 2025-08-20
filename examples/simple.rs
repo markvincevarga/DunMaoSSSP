@@ -17,11 +17,14 @@ fn main() {
     graph.add_edge(18, 7, 6.0);
 
     let mut solver = fast_sssp::SSSpSolver::new(graph);
-    let distances = solver.solve(0);
+    let distances = solver.solve_all(0);
 
-    println!("Shortest distances from vertex 0 (using new O(m log^(2/3) n) algorithm):");
-    for (i, &dist) in distances.iter().enumerate() {
-        if dist == std::f64::INFINITY {
+    println!("Shortest distances from vertex 0:");
+    let mut sorted_distances: Vec<_> = distances.into_iter().collect();
+    sorted_distances.sort_by_key(|&(k, _)| k);
+
+    for (i, dist) in sorted_distances {
+        if dist == f64::INFINITY {
             println!("  {} -> ∞", i);
         } else {
             println!("  {} -> {:.1}", i, dist);

@@ -1,113 +1,134 @@
 # A Fast SSSP
 
-> BMSSP (Bounded Multi-Source Shortest Path) or? Dun-Mal et al? I dunno what they want to call it.
-
-<!-- [![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://www.rust-lang.org/) -->
+> BMSSP (Bounded Multi-Source Shortest Path) or? Duan-Mao et al? I dunno what they want to call it.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A naive Rust implementation of the _breakthrough?_ deterministic algorithm for Single-Source Shortest Paths (SSSP) that breaks the O(m + n log n) sorting barrier on directed graphs. This is based on the paper ["Breaking the Sorting Barrier for Directed Single-Source Shortest Paths"](https://arxiv.org/abs/2504.17033) by Duan, Mao, Mao, Shu, and Yin (2025).
+A Rust implementation of the breakthrough deterministic algorithm for Single-Source Shortest Paths (SSSP) that breaks the O(m + n log n) sorting barrier on directed graphs. This is based on the paper ["Breaking the Sorting Barrier for Directed Single-Source Shortest Paths"](https://arxiv.org/abs/2504.17033) by Duan, Mao, Mao, Shu, and Yin (2025).
 
 It achieves **O(m log^(2/3) n)** time complexity for SSSP on directed graphs with real non-negative edge weights in the comparison-addition model.
 
-NOTE:
-This is more of a POC than a functional library for use in your own code, the 'data' you'd likely want available in a Graph's `Node` type etc is not set up here, I implemented this because, implementing papers is fun and what I do on my weekends.
+**NOTE:** This is more of a POC than a functional library. The data structures you'd likely want in a Graph's `Node` type etc are not set up here. I implemented this because implementing papers is fun and what I do on my weekends.
 
-### Paper claims:
+## Algorithm Properties
 
 - **Time Complexity**: O(m log^(2/3) n)
 - **Space Complexity**: O(n + m)
-- **Best for**: Sparse directed graphs where breaking the sorting barrier matters
-- **Practical use**: Currently more of theoretical interest; Dijkstra may be faster in practice
+- **First deterministic algorithm** to break the O(m + n log n) barrier even for undirected graphs
+- **Best for**: Large sparse directed graphs where breaking the sorting barrier matters
+- **Model**: Works in comparison-addition model (only comparisons and additions on edge weights)
+
+## Performance Results
+
+The algorithm can be **very, very good** on appropriate graphs:
+
+```
+livejournal SSSP (V2)/duan_mao_v2
+                        time:   [583.02 ms 588.80 ms 594.90 ms]
+livejournal SSSP (V2)/petgraph_dijkstra
+                        time:   [8.8686 s 9.0271 s 9.1969 s]
+```
+> Test rig: Kernel: 6.12.10-76061203-generic with CPU: AMD Ryzen 9 5950X (32) @ 5.084GHz 
+
+**That's ~15x faster than Dijkstra on LiveJournal dataset!**
+
+## When to Use This Algorithm (If you really must.. but you probably shouldn't)
+
+### ✅ Use When:
+- **Large sparse directed graphs**: n > 10⁵, m ≈ n to n log n
+- **Repeated computations**: You solve SSSP frequently on similar graphs  
+- **Graph density ratio m/n is low**: Algorithm shines when m ≈ n
+
+### ❌ Avoid When:
+- **Small graphs**: n < 10³ (Dijkstra ~will likely~ be faster)
+- **Dense graphs**: m ≈ n² (benefit diminishes significantly)
+- **One-off computations** on moderately sized graphs
+- **Implementation time is limited**: Dijkstra is much simpler
+- **Need shortest path tree structure**: This algorithm focuses on distances only
+
+### Suggested Decision Framework
+
+```
+1. Is n < 1,000?
+   → Use Dijkstra's (simpler, likely faster in practice), there's many many many SSSP algos do the reading they all have tradeoffs!
+
+2. Is m > n^1.5?
+   → Consider whether theoretical benefit justifies complexity
+
+3. Is this a one-off computation?
+   → Stick with Dijkstra's unless n > 10^6, even then you can run a big-ass graph in the time it takes to implement and test something is giving you valid output!
+
+4. Do you solve many similar SSSP problems?
+   → Implementation cost amortizes; consider for n > 10^4
+
+5. Research/experimental context?
+   → Go work out more of these!
+```
+
+**Practical threshold**: Most beneficial when n > 10⁴ and graph is relatively sparse (m ≤ n log n).
+
+## Requirements
+
+Your graph must be:
+- ✅ **Directed** (required)
+- ✅ **Non-negative real edge weights** (required)
+- ✅ **Single-source** (not all-pairs)
+
+## Usage
 
 ### Tests
-
 ```bash
 # Run all tests
-cargo test
-
-# Run with output
-cargo test -- --nocapture
-
+cargo test -F full
 ```
 
-> # So... Is it good? -- Yeah, it shows promise!
-
-### Benchmarking:
-
-#### Get data:
-
+### Get benchmark data:
 ```bash
-cargo run --release --bin fetch_data -F full # Will download the wikipedia-talk dataset for you
+# Download wikipedia-talk dataset
+cargo run --release --bin fetch_data -F full
+
+# Or manually get other datasets:
+# LiveJournal (best for seeing improvements)
+wget https://snap.stanford.edu/data/soc-LiveJournal1.txt.gz
+
+# Pokec (backup)  
+wget https://snap.stanford.edu/data/soc-Pokec-relationships.txt.gz
+
+# YouTube (smaller test)
+wget https://snap.stanford.edu/data/com-youtube.ungraph.txt.gz
 ```
 
+Place datasets in `./data` directory.
+
+### Run benchmarks:
 ```bash
-cargo run bench # synthetics
-# or
-cargo run --release --example wiki_talk_benchmark -F bincode # It'll error out if you don't have the data
+cargo run bench -F full
 ```
 
-Figures are from my ancient 2013 Macbook Pro with an Intel i7-4960HQ and 16GB od DDR3 (garbage machine I know...)
+## Implementation Notes
 
-#### Real-World:
+This implementation includes:
+- **FindPivots algorithm**: Reduces frontier size by factor of log^Ω(1)(n)
+- **Block-based data structure**: From Lemma 3.3 supporting efficient Insert/BatchPrepend/Pull operations
+- **Recursive partitioning**: O(log n/t) levels with t = ⌊log^(2/3)(n)⌋
+- **Constant-degree transformation**: Converts arbitrary graphs as described in the paper
 
-\_ Wiki-Talk \_
+**Complexity vs. Benefit**: The big-O notation hides potentially large constant factors. The paper mentions "large constant C" in analysis, so practical benefits depend heavily on your specific graph characteristics.
 
-```sh
-Benchmarking on Wiki-Talk dataset:
-Source   Dijkstra (ms)   New Algo (ms)   Sp          
--------------------------------------------------------
-0        102             102             1.00        x
-100      107680          109             987.89      x
-1000     78398           115             681.72      x
-5000     68606           100             686.06      x
-```
+## TODOs
 
-#### Synthetics:
-
-| Benchmark | Best, Avg, Worst | Outliers |
-| :--- | :--- | :--- |
-| **SSSP Algorithms/Dijkstra_Sparse/50** | `[9.0217 µs 9.1254 µs 9.2647 µs]` | 6 outliers (6.00%): 3 high mild, 3 high severe |
-| **SSSP Algorithms/NewAlgorithm_Sparse/50** | `[7.8958 µs 7.9676 µs 8.0494 µs]` | 4 outliers (4.00%): 3 high mild, 1 high severe |
-| **SSSP Algorithms/Dijkstra_Sparse/100** | `[41.739 µs 42.105 µs 42.573 µs]` | 10 outliers (10.00%): 5 high mild, 5 high severe |
-| **SSSP Algorithms/NewAlgorithm_Sparse/100**| `[14.838 µs 15.773 µs 17.250 µs]` | 8 outliers (8.00%): 5 high mild, 3 high severe |
-| **SSSP Algorithms/Dijkstra_Sparse/200** | `[144.47 µs 149.85 µs 158.39 µs]` | 5 outliers (5.00%): 2 high mild, 3 high severe |
-| **SSSP Algorithms/NewAlgorithm_Sparse/200**| `[28.600 µs 29.919 µs 31.739 µs]` | 5 outliers (5.00%): 4 high mild, 1 high severe |
-| **SSSP Algorithms/Dijkstra_Sparse/500** | `[952.55 µs 976.34 µs 1.0029 ms]` | 10 outliers (10.00%): 8 high mild, 2 high severe |
-| **SSSP Algorithms/NewAlgorithm_Sparse/500**| `[70.068 µs 73.532 µs 77.810 µs]` | 7 outliers (7.00%): 4 high mild, 3 high severe |
-| **SSSP Algorithms/Dijkstra_Sparse/1000** | `[4.5097 ms 4.6387 ms 4.8132 ms]` | 10 outliers (10.00%): 9 high mild, 1 high severe |
-| **SSSP Algorithms/NewAlgorithm_Sparse/1000**| `[134.19 µs 142.28 µs 154.94 µs]` | 8 outliers (8.00%): 5 high mild, 3 high severe |
-| **SSSP Algorithms/Dijkstra_Dense/50** | `[29.972 µs 30.786 µs 31.723 µs]` | 7 outliers (7.00%): 6 high mild, 1 high severe |
-| **SSSP Algorithms/NewAlgorithm_Dense/50** | `[10.006 µs 10.386 µs 10.884 µs]` | 8 outliers (8.00%): 4 high mild, 4 high severe |
-| **SSSP Algorithms/Dijkstra_Dense/100** | `[236.45 µs 244.29 µs 254.07 µs]` | 5 outliers (5.00%): 2 high mild, 3 high severe |
-| **SSSP Algorithms/NewAlgorithm_Dense/100**| `[17.637 µs 17.806 µs 18.023 µs]` | 9 outliers (9.00%): 5 high mild, 4 high severe |
-| **SSSP Algorithms/Dijkstra_Dense/200** | `[988.78 µs 994.59 µs 1.0006 ms]` | 2 outliers (2.00%): 2 high mild |
-| **SSSP Algorithms/NewAlgorithm_Dense/200**| `[35.157 µs 35.351 µs 35.571 µs]` | 5 outliers (5.00%): 3 high mild, 2 high severe |
-| **Scaling Behavior/NewAlgorithm_Scaling/100**| `[12.204 µs 12.297 µs 12.398 µs]` | 7 outliers (7.00%): 5 high mild, 2 high severe |
-| **Scaling Behavior/NewAlgorithm_Scaling/200**| `[26.112 µs 26.596 µs 27.194 µs]` | 8 outliers (8.00%): 3 high mild, 5 high severe |
-| **Scaling Behavior/NewAlgorithm_Scaling/400**| `[48.366 µs 50.270 µs 53.218 µs]` | 9 outliers (9.00%): 6 high mild, 3 high severe |
-| **Scaling Behavior/NewAlgorithm_Scaling/800**| `[92.562 µs 96.457 µs 101.63 µs]` | 9 outliers (9.00%): 5 high mild, 4 high severe |
-| **Scaling Behavior/NewAlgorithm_Scaling/1600**|`[190.82 µs 195.76 µs 202.02 µs]`| 6 outliers (6.00%): 2 high mild, 4 high severe |
+- [ ] Generic `Node` and `Weight` types to carry wider variety of data
+- [ ] Make API more like Petgraph (which is rather nice and well thought out...)
+- [ ] Better error handling and edge cases
+- [ ] More comprehensive benchmarking suite
+- [ ] Reach a conclusion about v1 vs v2 
+- [ ] See if the parallel numbers can shine even brighter against the sequential v2 version.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT
 
 ## References
 
 - **Primary Paper**: ["Breaking the Sorting Barrier for Directed Single-Source Shortest Paths"](https://arxiv.org/abs/2504.17033) by Ran Duan, Jiayi Mao, Xiao Mao, Xinkai Shu, Longhui Yin (2025)
 
-<!-- ```
-@article{duan2025breaking,
-  title={Breaking the Sorting Barrier for Directed Single-Source Shortest Paths},
-  author={Duan, Ran and Mao, Jiayi and Mao, Xiao and Shu, Xinkai and Yin, Longhui},
-  journal={arXiv preprint arXiv:2504.17033},
-  year={2025}
-}
-``` -->
-
-## TODOs:
-
-- \[\] workspace & feature flag deps like `serde` etc to clean up deps
-- \[\] bring in some other libraries that have a Dijkstra in them, and bench against this.
-- \[\] a `Node` and or a `Weight` would need to be able to carry a wider variety of data types to be useful..
