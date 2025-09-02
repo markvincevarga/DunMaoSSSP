@@ -1,7 +1,6 @@
 use criterion::{Criterion, criterion_group, criterion_main};
 use fast_sssp::DuanMaoSolverV2;
 use fast_sssp::graph::Graph;
-use fast_sssp::parallel::ParallelSSSpSolver;
 use petgraph::algo::dijkstra;
 use petgraph::graph::DiGraph;
 use rand::seq::SliceRandom;
@@ -13,13 +12,6 @@ mod graph_loader;
 
 fn run_fast_sssp_sequential(graph: &Graph, pairs: &[(usize, usize)]) {
     let mut solver = DuanMaoSolverV2::new(graph.clone());
-    for (source, goal) in pairs {
-        black_box(solver.solve(*source, *goal));
-    }
-}
-
-fn run_fast_sssp_parallel(graph: &Graph, pairs: &[(usize, usize)], num_threads: usize) {
-    let solver = ParallelSSSpSolver::new(graph.clone(), num_threads);
     for (source, goal) in pairs {
         black_box(solver.solve(*source, *goal));
     }
@@ -54,14 +46,6 @@ fn benchmark(c: &mut Criterion) {
     group.bench_function("fast_sssp_sequential", |b| {
         b.iter(|| run_fast_sssp_sequential(black_box(&fast_sssp_graph), black_box(&pairs)))
     });
-
-    for threads in [8, 12, 16, 24, 32].iter() {
-        group.bench_function(format!("fast_sssp_parallel_{}_threads", threads), |b| {
-            b.iter(|| {
-                run_fast_sssp_parallel(black_box(&fast_sssp_graph), black_box(&pairs), *threads)
-            })
-        });
-    }
 
     group.bench_function("petgraph_dijkstra", |b| {
         b.iter(|| run_petgraph_dijkstra(black_box(&petgraph_graph), black_box(&pairs)))

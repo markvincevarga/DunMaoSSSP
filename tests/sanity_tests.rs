@@ -5,7 +5,7 @@
 mod graph_loader;
 
 use crate::graph_loader::{read_dimacs_graph_for_fast_sssp, read_dimacs_graph_for_petgraph};
-use fast_sssp::{DuanMaoSolverV2, SSSpSolver};
+use fast_sssp::DuanMaoSolverV2;
 use petgraph::algo::dijkstra;
 use std::collections::HashMap;
 use std::path::Path;
@@ -43,22 +43,15 @@ fn sanity_with_all_solvers() {
     let sequential_result = sequential_solver.solve(internal_source, internal_goal);
     let sequential_dist = sequential_result.map(|(d, _)| d).unwrap_or(f64::INFINITY);
 
-    // SSSpSolver result (if available)
-    let mut sssp_solver = SSSpSolver::new(fast_graph);
-    let sssp_result = sssp_solver.solve(internal_source, internal_goal);
-    let sssp_dist = sssp_result.map(|(d, _)| d).unwrap_or(f64::INFINITY);
-
     // Print all distances for debugging
     println!("Petgraph distance: {}", petgraph_dist);
     println!("Sequential Duan-Mao distance: {}", sequential_dist);
     // println!("Parallel Duan-Mao distance: {}", parallel_dist);
-    println!("SSSpSolver distance: {}", sssp_dist);
 
     // Also check that all solvers agree on path existence
     let has_path_petgraph = petgraph_dist < f64::INFINITY;
     let has_path_sequential = sequential_dist < f64::INFINITY;
     // let has_path_parallel = parallel_dist < f64::INFINITY;
-    let has_path_sssp = sssp_dist < f64::INFINITY;
 
     assert_eq!(
         has_path_petgraph, has_path_sequential,
@@ -68,10 +61,6 @@ fn sanity_with_all_solvers() {
     //     has_path_petgraph, has_path_parallel,
     //     "Path existence mismatch between petgraph and parallel solver"
     // );
-    assert_eq!(
-        has_path_petgraph, has_path_sssp,
-        "Path existence mismatch between petgraph and SSSpSolver"
-    );
 
     println!("✅ All solvers agree on distance and path existence!");
 }
