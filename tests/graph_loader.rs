@@ -1,13 +1,11 @@
 #![allow(dead_code)]
 use fast_sssp::Graph;
-use geo::{Distance, Haversine, Point, wkt};
+use geo::{Distance, Haversine, Point};
 use osmpbf::{Element, ElementReader};
 use petgraph::graph::{DiGraph, NodeIndex};
 
 #[cfg(feature = "hashbrown")]
 use hashbrown::HashMap;
-#[cfg(not(feature = "hashbrown"))]
-use std::collections::HashMap;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
