@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 use fast_sssp::Graph;
 use geo::{Distance, Haversine, Point};
+use num_format::{Locale, ToFormattedString};
 use osmpbf::{Element, ElementReader};
 use petgraph::graph::{DiGraph, NodeIndex};
 
@@ -225,7 +226,10 @@ pub fn read_osm_pbf_map(pbf_path: &Path) -> Graph {
         graph.add_edge(node_b.idx, node_a.idx, distance);
     });
 
-    println!("Number of edges: {}", graph.edge_count());
+    println!(
+        "Number of edges: {:}",
+        graph.edge_count().to_formatted_string(&Locale::is)
+    );
 
     return graph;
 }

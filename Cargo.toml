@@ -57,6 +57,7 @@ crossbeam-utils = { version = "0.8.21", optional = true }
 osmpbf = "0.3.6"
 osmpbfreader = "0.19.1"
 geo = "0.31.0"
+num-format = "0.4.4"
 
 [dev-dependencies]
 criterion = "0.7.0"
