@@ -3,7 +3,9 @@ use fast_sssp::graph::Graph;
 use fast_sssp::DuanMaoSolverV2;
 use petgraph::algo::dijkstra;
 use petgraph::graph::DiGraph;
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
+use rand::{Rng, SeedableRng};
 use std::hint::black_box;
 use std::path::Path;
 
@@ -32,15 +34,16 @@ fn benchmark(c: &mut Criterion) {
     let fast_sssp_graph = graph_loader::read_osm_pbf_map(path);
     let (petgraph_graph, _) = graph_loader::convert_to_petgraph(&fast_sssp_graph);
 
-    let mut rng = rand::rng();
-    let pairs: Vec<(usize, usize)> = (0..20)
-        .map(|_| rng.random_range(0..fast_sssp_graph.vertices))
-        .collect::<Vec<usize>>()
-        .chunks(2)
-        .map(|chunk| (chunk[0], chunk[1]))
-        .take(10)
+    let mut rng = StdRng::seed_from_u64(42);
+    let pairs: Vec<(usize, usize)> = (0..10)
+        .map(|_| {
+            (
+                rng.random_range(0..fast_sssp_graph.vertices),
+                rng.random_range(0..fast_sssp_graph.vertices),
+            )
+        })
         .collect();
-
+    println!("Benchmarking pairs: {:?}", pairs);
     let mut group = c.benchmark_group("Stockholm SSSP");
 
     group.bench_function("fast_sssp_sequential", |b| {
