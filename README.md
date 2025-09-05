@@ -104,6 +104,10 @@ Place datasets in `./data` directory.
 ```bash
 cargo run bench -F full
 ```
+### Run verbose benchmarks:
+```bash
+ cargo bench --bench map_data -- --verbose
+```
 
 ## Implementation Notes
 
