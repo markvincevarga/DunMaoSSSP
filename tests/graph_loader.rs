@@ -4,8 +4,7 @@ use geo::{Distance, Haversine, Point};
 use osmpbf::{Element, ElementReader};
 use petgraph::graph::{DiGraph, NodeIndex};
 
-#[cfg(feature = "hashbrown")]
-use hashbrown::HashMap;
+use std::collections::HashMap;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
