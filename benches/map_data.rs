@@ -1,6 +1,6 @@
-use criterion::{Criterion, criterion_group, criterion_main};
-use fast_sssp::DuanMaoSolverV2;
+use criterion::{criterion_group, criterion_main, Criterion};
 use fast_sssp::graph::Graph;
+use fast_sssp::DuanMaoSolverV2;
 use petgraph::algo::dijkstra;
 use petgraph::graph::DiGraph;
 use rand::seq::SliceRandom;
@@ -41,7 +41,7 @@ fn benchmark(c: &mut Criterion) {
         .take(10)
         .collect();
 
-    let mut group = c.benchmark_group("Rome99 SSSP");
+    let mut group = c.benchmark_group("Stockholm SSSP");
 
     group.bench_function("fast_sssp_sequential", |b| {
         b.iter(|| run_fast_sssp_sequential(black_box(&fast_sssp_graph), black_box(&pairs)))

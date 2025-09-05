@@ -13,6 +13,7 @@ use std::path::Path;
 
 #[cfg(feature = "flate2")]
 use flate2::read::GzDecoder;
+use tqdm::tqdm;
 
 #[allow(dead_code)]
 pub fn read_dimacs_graph_for_petgraph(
@@ -215,7 +216,13 @@ pub fn read_osm_pbf_map(pbf_path: &Path) -> Graph {
         .expect("file must include correct osm data");
 
     let mut graph = Graph::new(nodes.len());
-    edges.iter().for_each(|edge| {
+
+    println!(
+        "Number of nodes: {:}, Number of edges: {:}",
+        nodes.len().to_formatted_string(&Locale::is),
+        edges.len().to_formatted_string(&Locale::is)
+    );
+    tqdm(edges.iter()).for_each(|edge| {
         let node_a = &nodes[&edge.from];
         let node_b = &nodes[&edge.to];
         let distance = Haversine.distance(
