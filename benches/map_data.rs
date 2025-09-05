@@ -33,9 +33,9 @@ fn benchmark(c: &mut Criterion) {
     let (petgraph_graph, _) = graph_loader::convert_to_petgraph(&fast_sssp_graph);
 
     let mut rng = rand::rng();
-    let mut nodes: Vec<usize> = (0..fast_sssp_graph.vertices).collect();
-    nodes.shuffle(&mut rng);
-    let pairs: Vec<(usize, usize)> = nodes
+    let pairs: Vec<(usize, usize)> = (0..20)
+        .map(|_| rng.random_range(0..fast_sssp_graph.vertices))
+        .collect::<Vec<usize>>()
         .chunks(2)
         .map(|chunk| (chunk[0], chunk[1]))
         .take(10)
