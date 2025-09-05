@@ -69,6 +69,11 @@ name = "rome"
 harness = false
 required-features = ["full"]
 
+[[bench]]
+name = "osmdata"
+harness = false
+required-features = ["full"]
+
 [[bin]]
 name = "fetch_data"
 path = "bins/fetch_data.rs"
