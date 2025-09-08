@@ -1,5 +1,6 @@
 use criterion::{Criterion, criterion_group, criterion_main};
 use fast_sssp::DuanMaoSolverV2;
+use fast_sssp::algo::dijkstra as own_dijkstra;
 use fast_sssp::graph::Graph;
 use petgraph::algo::dijkstra;
 use petgraph::graph::DiGraph;
@@ -28,10 +29,17 @@ fn run_petgraph_dijkstra(graph: &DiGraph<(), f64>, pairs: &[(usize, usize)]) {
     }
 }
 
+fn run_own_dijkstra(graph: &Graph, pairs: &[(usize, usize)]) {
+    for (source, goal) in pairs {
+        black_box(own_dijkstra(graph, *source, *goal));
+    }
+}
+
 fn benchmark(c: &mut Criterion) {
     let path = Path::new("data/gotland.osm.pbf");
     let fast_sssp_graph = graph_loader::read_osm_pbf_map(path);
     let (petgraph_graph, _) = graph_loader::convert_to_petgraph(&fast_sssp_graph);
+    let own_graph = fast_sssp_graph.clone();
 
     let mut rng = StdRng::seed_from_u64(42);
     let pairs: Vec<(usize, usize)> = (0..10)
@@ -51,6 +59,10 @@ fn benchmark(c: &mut Criterion) {
 
     group.bench_function("petgraph_dijkstra", |b| {
         b.iter(|| run_petgraph_dijkstra(black_box(&petgraph_graph), black_box(&pairs)))
+    });
+
+    group.bench_function("own_dijkstra", |b| {
+        b.iter(|| run_own_dijkstra(black_box(&own_graph), black_box(&pairs)))
     });
 
     group.finish();
