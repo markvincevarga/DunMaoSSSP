@@ -26,13 +26,12 @@ impl PartialOrd for State {
     }
 }
 
-pub fn dijkstra(graph: &Graph, start: usize, goal: usize) -> Option<(f64, Vec<usize>)> {
+pub fn dijkstra(graph: &Graph, start: usize, goal: usize) -> Option<f64> {
     if start >= graph.vertices || goal >= graph.vertices {
         return None;
     }
 
     let mut dist = vec![f64::INFINITY; graph.vertices];
-    let mut prev = vec![None; graph.vertices];
     let mut heap = BinaryHeap::new();
 
     dist[start] = 0.0;
@@ -43,16 +42,7 @@ pub fn dijkstra(graph: &Graph, start: usize, goal: usize) -> Option<(f64, Vec<us
 
     while let Some(State { cost, position }) = heap.pop() {
         if position == goal {
-            let mut path = Vec::new();
-            let mut current = Some(goal);
-
-            while let Some(node) = current {
-                path.push(node);
-                current = prev[node];
-            }
-
-            path.reverse();
-            return Some((cost, path));
+            return Some(cost);
         }
 
         if cost > dist[position] {
@@ -68,7 +58,6 @@ pub fn dijkstra(graph: &Graph, start: usize, goal: usize) -> Option<(f64, Vec<us
             if next.cost < dist[next.position] {
                 heap.push(next);
                 dist[next.position] = next.cost;
-                prev[next.position] = Some(position);
             }
         }
     }
@@ -91,9 +80,8 @@ mod tests {
         let result = dijkstra(&graph, 0, 3);
         assert!(result.is_some());
 
-        let (cost, path) = result.unwrap();
+        let cost = result.unwrap();
         assert_eq!(cost, 4.0);
-        assert_eq!(path, vec![0, 1, 2, 3]);
     }
 
     #[test]
@@ -112,9 +100,8 @@ mod tests {
         let result = dijkstra(&graph, 0, 0);
         assert!(result.is_some());
 
-        let (cost, path) = result.unwrap();
+        let cost = result.unwrap();
         assert_eq!(cost, 0.0);
-        assert_eq!(path, vec![0]);
     }
 
     #[test]
