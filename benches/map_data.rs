@@ -1,10 +1,9 @@
-use criterion::{criterion_group, criterion_main, Criterion};
-use fast_sssp::graph::Graph;
+use criterion::{Criterion, criterion_group, criterion_main};
 use fast_sssp::DuanMaoSolverV2;
+use fast_sssp::graph::Graph;
 use petgraph::algo::dijkstra;
 use petgraph::graph::DiGraph;
 use rand::rngs::StdRng;
-use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
 use std::hint::black_box;
 use std::path::Path;
