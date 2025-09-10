@@ -59,6 +59,7 @@ osmpbfreader = "0.19.1"
 geo = "0.31.0"
 num-format = "0.4.4"
 tqdm = "0.8.0"
+fibonacci_heap = { git = "https://github.com/markvincevarga/fibonacci_heap", version = "0.8.1" }
 
 [dev-dependencies]
 criterion = "0.7.0"
