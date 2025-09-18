@@ -30,8 +30,12 @@ fn run_own_dijkstra(graph: &Graph, pairs: &[(usize, usize)]) {
     }
 }
 
-fn benchmark(c: &mut Criterion) {
-    let path = Path::new("data/gotland.osm.pbf");
+fn bench_file(c: &mut Criterion, path: &Path, samples: usize) {
+    let name = path
+        .file_stem()
+        .expect("file should have name")
+        .to_string_lossy();
+
     let fast_sssp_graph = graph_loader::read_osm_pbf_map(path);
     let own_graph = fast_sssp_graph.clone();
     let own_graph_fib = fast_sssp_graph.clone();
@@ -45,14 +49,15 @@ fn benchmark(c: &mut Criterion) {
             )
         })
         .collect();
-    println!("Benchmarking pairs: {:?}", pairs);
-    let mut group = c.benchmark_group("Stockholm SSSP");
 
-    group.bench_function("own_dijkstra", |b| {
+    let mut group = c.benchmark_group(name);
+    group.sample_size(samples);
+
+    group.bench_function("dijkstra", |b| {
         b.iter(|| run_own_dijkstra(black_box(&own_graph), black_box(&pairs)))
     });
 
-    group.bench_function("own_dijkstra_fibonacci", |b| {
+    group.bench_function("dijkstra_fibonacci", |b| {
         b.iter(|| run_own_dijkstra_fib(black_box(&own_graph_fib), black_box(&pairs)))
     });
 
@@ -61,6 +66,18 @@ fn benchmark(c: &mut Criterion) {
     });
 
     group.finish();
+}
+
+fn benchmark(c: &mut Criterion) {
+    [
+        ("gotland", 100usize),
+        ("stockholm", 50usize),
+        ("sweden", 10usize),
+    ]
+    .iter()
+    .for_each(|(name, samples)| {
+        bench_file(c, Path::new(&format!("data/{}.osm.pbf", name)), *samples)
+    });
 }
 
 criterion_group!(benches, benchmark);
