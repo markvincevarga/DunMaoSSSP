@@ -53,16 +53,16 @@ fn bench_file(c: &mut Criterion, path: &Path, samples: usize) {
     let mut group = c.benchmark_group(name);
     group.sample_size(samples);
 
+    group.bench_function("fast_sssp_sequential", |b| {
+        b.iter(|| run_fast_sssp_sequential(black_box(&fast_sssp_graph), black_box(&pairs)))
+    });
+
     group.bench_function("dijkstra", |b| {
         b.iter(|| run_own_dijkstra(black_box(&own_graph), black_box(&pairs)))
     });
 
     group.bench_function("dijkstra_fibonacci", |b| {
         b.iter(|| run_own_dijkstra_fib(black_box(&own_graph_fib), black_box(&pairs)))
-    });
-
-    group.bench_function("fast_sssp_sequential", |b| {
-        b.iter(|| run_fast_sssp_sequential(black_box(&fast_sssp_graph), black_box(&pairs)))
     });
 
     group.finish();
