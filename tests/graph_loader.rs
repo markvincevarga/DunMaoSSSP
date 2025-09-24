@@ -244,8 +244,9 @@ pub fn read_osm_pbf_map(pbf_path: &Path) -> Graph {
         graph
     });
     println!(
-        "Number of edges: {:}",
-        graph.edge_count().to_formatted_string(&Locale::is)
+        "Number of edges: {:} number of nodes: {:}",
+        graph.edge_count().to_formatted_string(&Locale::is),
+        graph.vertices.to_formatted_string(&Locale::is)
     );
     graph
 }
