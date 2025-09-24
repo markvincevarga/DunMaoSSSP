@@ -1,4 +1,5 @@
 target
 **/cache
 *.osm.pbf
+.DS_Store
 .idea
