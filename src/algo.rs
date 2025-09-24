@@ -103,36 +103,36 @@ pub fn dijkstra_fibonacci(graph: &Graph, start: usize, goal: usize) -> Option<f6
             }
         });
 
-        if let Some(pos_idx) = position {
-            if let Some(actual_pos) = positions[pos_idx] {
-                node_ptrs[actual_pos] = None;
-                positions[pos_idx] = None;
+        if let Some(pos_idx) = position
+            && let Some(actual_pos) = positions[pos_idx]
+        {
+            node_ptrs[actual_pos] = None;
+            positions[pos_idx] = None;
 
-                if actual_pos == goal {
-                    return Some(cost);
-                }
+            if actual_pos == goal {
+                return Some(cost);
+            }
 
-                if cost > dist[actual_pos] {
-                    continue;
-                }
+            if cost > dist[actual_pos] {
+                continue;
+            }
 
-                for edge in &graph.edges[actual_pos] {
-                    let new_cost = cost + edge.weight;
-                    let to = edge.to;
+            for edge in &graph.edges[actual_pos] {
+                let new_cost = cost + edge.weight;
+                let to = edge.to;
 
-                    if new_cost < dist[to] {
-                        dist[to] = new_cost;
+                if new_cost < dist[to] {
+                    dist[to] = new_cost;
 
-                        if let Some(ref node) = node_ptrs[to] {
-                            heap.decrease_key(node, OrderedFloat(new_cost)).ok();
+                    if let Some(ref node) = node_ptrs[to] {
+                        heap.decrease_key(node, OrderedFloat(new_cost)).ok();
+                    } else {
+                        let new_node = heap.insert(OrderedFloat(new_cost)).unwrap();
+                        node_ptrs[to] = Some(new_node);
+                        if let Some(empty_pos) = positions.iter().position(|&x| x.is_none()) {
+                            positions[empty_pos] = Some(to);
                         } else {
-                            let new_node = heap.insert(OrderedFloat(new_cost)).unwrap();
-                            node_ptrs[to] = Some(new_node);
-                            if let Some(empty_pos) = positions.iter().position(|&x| x.is_none()) {
-                                positions[empty_pos] = Some(to);
-                            } else {
-                                positions.push(Some(to));
-                            }
+                            positions.push(Some(to));
                         }
                     }
                 }
