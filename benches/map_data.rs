@@ -30,18 +30,19 @@ fn run_own_dijkstra(graph: &Graph, pairs: &[(usize, usize)]) {
     }
 }
 
-fn bench_file(c: &mut Criterion, path: &Path, samples: usize) {
+fn bench_file(c: &mut Criterion, path: &Path, samples: usize, num_pairs: usize) {
     let name = path
         .file_stem()
         .expect("file should have name")
         .to_string_lossy();
 
     let fast_sssp_graph = graph_loader::read_osm_pbf_map(path);
+
     let own_graph = fast_sssp_graph.clone();
     let own_graph_fib = fast_sssp_graph.clone();
 
     let mut rng = StdRng::seed_from_u64(42);
-    let pairs: Vec<(usize, usize)> = (0..10)
+    let pairs: Vec<(usize, usize)> = (0..num_pairs)
         .map(|_| {
             (
                 rng.random_range(0..fast_sssp_graph.vertices),
@@ -70,13 +71,31 @@ fn bench_file(c: &mut Criterion, path: &Path, samples: usize) {
 
 fn benchmark(c: &mut Criterion) {
     [
-        ("gotland", 100usize),
-        ("stockholm", 50usize),
-        ("sweden", 10usize),
+        ("jan_mayen", 50, 50),  // Size: 97K
+        ("gibraltar", 50, 50),  // Size: 417K
+        ("monaco", 50, 50),     // Size: 423K
+        ("san_marino", 50, 25), // Size: 1.1M
+        ("andorra", 50, 25),    // Size: 2.7M
+        ("gotland", 50, 25),    // Size: 4.8M
+        ("malta", 50, 25),      // Size: 6.9M
+        ("reykjavik", 50, 25),  // Size: 8.9M
+        ("budapest", 50, 25),   // Size: 25M
+        ("luxembourg", 25, 25), // Size: 37M
+        ("haiti", 25, 10),      // Size: 51M
+        ("iceland", 25, 10),    // Size: 57M
+        ("stockholm", 25, 10),  // Size: 59M
+        ("missisippi", 25, 10), // Size: 79M
+        ("peru", 10, 5),        // Size: 208M
+        ("sweden", 10, 5),      // Size: 692M
     ]
     .iter()
-    .for_each(|(name, samples)| {
-        bench_file(c, Path::new(&format!("data/{}.osm.pbf", name)), *samples)
+    .for_each(|(name, samples, num_pairs)| {
+        bench_file(
+            c,
+            Path::new(&format!("data/{}.osm.pbf", name)),
+            *samples,
+            *num_pairs,
+        )
     });
 }
 
