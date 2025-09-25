@@ -71,22 +71,23 @@ fn bench_file(c: &mut Criterion, path: &Path, samples: usize, num_pairs: usize) 
 
 fn benchmark(c: &mut Criterion) {
     [
-        ("jan_mayen", 50, 50),  // Size: 97K
-        ("gibraltar", 50, 50),  // Size: 417K
-        ("monaco", 50, 50),     // Size: 423K
-        ("san_marino", 50, 25), // Size: 1.1M
-        ("andorra", 50, 25),    // Size: 2.7M
-        ("gotland", 50, 25),    // Size: 4.8M
-        ("malta", 50, 25),      // Size: 6.9M
-        ("reykjavik", 50, 25),  // Size: 8.9M
-        ("budapest", 50, 25),   // Size: 25M
-        ("luxembourg", 25, 25), // Size: 37M
-        ("haiti", 25, 10),      // Size: 51M
-        ("iceland", 25, 10),    // Size: 57M
-        ("stockholm", 25, 10),  // Size: 59M
-        ("missisippi", 25, 10), // Size: 79M
-        ("peru", 10, 5),        // Size: 208M
-        ("sweden", 10, 5),      // Size: 692M
+        // (path, samples, num_pairs)
+        ("jan_mayen", 50, 250),  // Size: 97K
+        ("gibraltar", 50, 500),  // Size: 417K
+        ("monaco", 50, 250),     // Size: 423K
+        ("san_marino", 50, 100), // Size: 1.1M
+        ("andorra", 25, 75),     // Size: 2.7M
+        ("gotland", 25, 75),     // Size: 4.8M
+        ("malta", 25, 75),       // Size: 6.9M
+        ("reykjavik", 25, 75),   // Size: 8.9M
+        ("budapest", 10, 75),    // Size: 25M
+        ("luxembourg", 10, 25),  // Size: 37M
+        ("haiti", 10, 25),       // Size: 51M
+        ("iceland", 10, 20),     // Size: 57M
+        ("stockholm", 10, 20),   // Size: 59M
+        ("missisippi", 10, 20),  // Size: 79M
+        ("peru", 10, 5),         // Size: 208M
+        ("sweden", 10, 5),       // Size: 692M
     ]
     .iter()
     .for_each(|(name, samples, num_pairs)| {
