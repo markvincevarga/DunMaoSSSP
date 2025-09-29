@@ -86,8 +86,8 @@ fn benchmark(c: &mut Criterion) {
         ("iceland", 10, 20),     // Size: 57M
         ("stockholm", 10, 20),   // Size: 59M
         ("missisippi", 10, 20),  // Size: 79M
-        ("peru", 10, 5),         // Size: 208M
-        ("sweden", 10, 5),       // Size: 692M
+                                 //         ("peru", 10, 5),         // Size: 208M
+                                 //         ("sweden", 10, 5),       // Size: 692M
     ]
     .iter()
     .for_each(|(name, samples, num_pairs)| {
