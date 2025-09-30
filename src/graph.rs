@@ -2,6 +2,7 @@
 use bincode::{Decode, Encode};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -69,5 +70,117 @@ impl Graph {
             }
         }
         pg_graph
+    }
+
+    pub fn degrees_sorted(&self) -> Vec<usize> {
+        let mut degrees: Vec<usize> = self.edges.iter().map(|adj| adj.len()).collect();
+        degrees.sort_unstable();
+        degrees
+    }
+
+    pub fn bfs_distances(&self, start: usize) -> HashMap<usize, usize> {
+        let mut distances = HashMap::new();
+        let mut queue = VecDeque::new();
+
+        distances.insert(start, 0);
+        queue.push_back(start);
+
+        while let Some(node) = queue.pop_front() {
+            let current_dist = distances[&node];
+
+            for edge in &self.edges[node] {
+                if !distances.contains_key(&edge.to) {
+                    distances.insert(edge.to, current_dist + 1);
+                    queue.push_back(edge.to);
+                }
+            }
+        }
+
+        distances
+    }
+
+    pub fn strongly_connected_component(&self, start: usize) -> HashSet<usize> {
+        let distances = self.bfs_distances(start);
+        distances.keys().cloned().collect()
+    }
+
+    pub fn diameter(&self) -> Option<usize> {
+        let mut max_distance = 0;
+
+        for vertex in 0..self.vertices {
+            let distances = self.bfs_distances(vertex);
+            if let Some(&max_dist) = distances.values().max() {
+                max_distance = max_distance.max(max_dist);
+            }
+        }
+
+        if max_distance == 0 && self.vertices > 1 {
+            None
+        } else {
+            Some(max_distance)
+        }
+    }
+
+    pub fn average_path_length_scc(&self, start: usize) -> Option<f64> {
+        let scc = self.strongly_connected_component(start);
+        let scc_size = scc.len();
+
+        if scc_size <= 1 {
+            return None;
+        }
+
+        let mut total_distance = 0usize;
+        let mut path_count = 0usize;
+
+        for &node in &scc {
+            let distances = self.bfs_distances(node);
+
+            for &other_node in &scc {
+                if node != other_node {
+                    if let Some(&dist) = distances.get(&other_node) {
+                        total_distance += dist;
+                        path_count += 1;
+                    }
+                }
+            }
+        }
+
+        if path_count == 0 {
+            None
+        } else {
+            Some(total_distance as f64 / path_count as f64)
+        }
+    }
+
+    pub fn clustering_coefficient(&self) -> Vec<f64> {
+        let mut coefficients = Vec::with_capacity(self.vertices);
+
+        for node in 0..self.vertices {
+            let neighbors: HashSet<usize> = self.edges[node].iter().map(|e| e.to).collect();
+            let k = neighbors.len();
+
+            if k < 2 {
+                coefficients.push(0.0);
+                continue;
+            }
+
+            let mut triangle_count = 0;
+
+            for &neighbor1 in &neighbors {
+                for &neighbor2 in &neighbors {
+                    if neighbor1 < neighbor2 {
+                        if self.edges[neighbor1].iter().any(|e| e.to == neighbor2) {
+                            triangle_count += 1;
+                        }
+                    }
+                }
+            }
+
+            let possible_triangles = k * (k - 1) / 2;
+            let coefficient = triangle_count as f64 / possible_triangles as f64;
+            coefficients.push(coefficient);
+        }
+
+        coefficients
     }
 }
