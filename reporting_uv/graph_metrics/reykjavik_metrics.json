@@ -1,0 +1,52 @@
+{
+  "graph_info": {
+    "file_path": "data/reykjavik.osm.pbf",
+    "vertices": 1051160,
+    "edges": 2241396
+  },
+  "degrees": {
+    "min": 0,
+    "max": 14,
+    "median": 2.0,
+    "average": 2.132307165417253,
+    "distribution": {
+      "8": 537,
+      "3": 43290,
+      "1": 15523,
+      "14": 1,
+      "5": 1517,
+      "7": 161,
+      "6": 6867,
+      "0": 52657,
+      "11": 1,
+      "4": 89994,
+      "10": 51,
+      "12": 9,
+      "2": 840542,
+      "9": 10
+    }
+  },
+  "diameter": {
+    "value": 2354,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0014790476190476192,
+    "nodes_calculated": 10000,
+    "total_nodes": 1051160
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 2.7233887919999997
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "graph_info": {
+    "file_path": "data/andorra.osm.pbf",
+    "vertices": 449273,
+    "edges": 1043844
+  },
+  "degrees": {
+    "min": 0,
+    "max": 18,
+    "median": 2.0,
+    "average": 2.323406926300935,
+    "distribution": {
+      "13": 6,
+      "15": 2,
+      "14": 9,
+      "7": 94,
+      "10": 420,
+      "16": 3,
+      "8": 866,
+      "6": 6820,
+      "3": 7327,
+      "9": 16,
+      "18": 1,
+      "12": 63,
+      "11": 23,
+      "2": 369847,
+      "0": 4481,
+      "4": 55709,
+      "1": 3189,
+      "5": 397
+    }
+  },
+  "diameter": {
+    "value": 1713,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0018235714285714283,
+    "nodes_calculated": 10000,
+    "total_nodes": 449273
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 2.656111292
+  }
+}

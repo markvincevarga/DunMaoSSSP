@@ -1,0 +1,45 @@
+{
+  "graph_info": {
+    "file_path": "data/jan_mayen.osm.pbf",
+    "vertices": 13230,
+    "edges": 29786
+  },
+  "degrees": {
+    "min": 0,
+    "max": 8,
+    "median": 2.0,
+    "average": 2.2513983371126227,
+    "distribution": {
+      "3": 162,
+      "6": 66,
+      "8": 2,
+      "1": 338,
+      "0": 92,
+      "2": 10865,
+      "4": 1705
+    }
+  },
+  "diameter": {
+    "value": 1384,
+    "is_estimated": false,
+    "sample_size": null,
+    "method": "exact"
+  },
+  "average_path_length": {
+    "value": 492.3536283819024,
+    "skipped": false,
+    "reason": null
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0005139833711262282,
+    "nodes_calculated": 13230,
+    "total_nodes": 13230
+  },
+  "execution": {
+    "mode": "FULL",
+    "total_time_seconds": 9.617576125
+  }
+}

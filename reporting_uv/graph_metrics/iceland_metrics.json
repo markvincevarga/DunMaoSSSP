@@ -1,0 +1,54 @@
+{
+  "graph_info": {
+    "file_path": "data/iceland.osm.pbf",
+    "vertices": 10350896,
+    "edges": 21055604
+  },
+  "degrees": {
+    "min": 0,
+    "max": 18,
+    "median": 2.0,
+    "average": 2.034181775181588,
+    "distribution": {
+      "1": 84310,
+      "7": 368,
+      "10": 70,
+      "5": 3375,
+      "14": 1,
+      "2": 9811496,
+      "4": 180784,
+      "3": 179758,
+      "9": 21,
+      "11": 1,
+      "8": 729,
+      "12": 9,
+      "13": 1,
+      "0": 80048,
+      "18": 2,
+      "6": 9923
+    }
+  },
+  "diameter": {
+    "value": 7484,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 0.6666666666666666,
+    "median": 0.0,
+    "average": 0.00021999999999999998,
+    "nodes_calculated": 10000,
+    "total_nodes": 10350896
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 43.254434667
+  }
+}

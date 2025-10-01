@@ -1,0 +1,53 @@
+{
+  "graph_info": {
+    "file_path": "data/malta.osm.pbf",
+    "vertices": 734962,
+    "edges": 1818642
+  },
+  "degrees": {
+    "min": 0,
+    "max": 14,
+    "median": 2.0,
+    "average": 2.4744707889659603,
+    "distribution": {
+      "0": 16518,
+      "1": 33882,
+      "3": 48386,
+      "10": 1566,
+      "2": 503437,
+      "9": 311,
+      "12": 135,
+      "4": 91175,
+      "6": 23038,
+      "8": 7937,
+      "14": 8,
+      "7": 1543,
+      "11": 29,
+      "5": 6996,
+      "13": 1
+    }
+  },
+  "diameter": {
+    "value": 754,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.00640087301587302,
+    "nodes_calculated": 10000,
+    "total_nodes": 734962
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 2.172942125
+  }
+}

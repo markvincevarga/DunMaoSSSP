@@ -1,0 +1,49 @@
+{
+  "graph_info": {
+    "file_path": "data/san_marino.osm.pbf",
+    "vertices": 154249,
+    "edges": 341976
+  },
+  "degrees": {
+    "min": 0,
+    "max": 10,
+    "median": 2.0,
+    "average": 2.217038684205408,
+    "distribution": {
+      "0": 13309,
+      "9": 2,
+      "10": 11,
+      "8": 160,
+      "3": 5168,
+      "2": 107978,
+      "6": 3206,
+      "4": 21655,
+      "5": 105,
+      "7": 12,
+      "1": 2643
+    }
+  },
+  "diameter": {
+    "value": 629,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.002160476190476192,
+    "nodes_calculated": 10000,
+    "total_nodes": 154249
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 0.279459167
+  }
+}

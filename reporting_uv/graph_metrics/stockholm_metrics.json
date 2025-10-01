@@ -1,0 +1,63 @@
+{
+  "graph_info": {
+    "file_path": "data/stockholm.osm.pbf",
+    "vertices": 7307104,
+    "edges": 16459816
+  },
+  "degrees": {
+    "min": 0,
+    "max": 30,
+    "median": 2.0,
+    "average": 2.2525772180059294,
+    "distribution": {
+      "5": 13451,
+      "8": 6987,
+      "25": 3,
+      "14": 3,
+      "16": 5,
+      "11": 66,
+      "1": 110998,
+      "7": 2691,
+      "20": 394,
+      "21": 10,
+      "4": 788502,
+      "9": 457,
+      "22": 415,
+      "19": 11,
+      "24": 76,
+      "30": 8,
+      "0": 137671,
+      "12": 47,
+      "13": 9,
+      "10": 451,
+      "3": 261553,
+      "6": 67313,
+      "18": 148,
+      "2": 5915824,
+      "23": 11
+    }
+  },
+  "diameter": {
+    "value": 2845,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.00149952380952381,
+    "nodes_calculated": 10000,
+    "total_nodes": 7307104
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 23.165169958
+  }
+}

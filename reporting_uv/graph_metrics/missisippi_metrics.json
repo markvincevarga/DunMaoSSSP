@@ -1,0 +1,51 @@
+{
+  "graph_info": {
+    "file_path": "data/missisippi.osm.pbf",
+    "vertices": 10464418,
+    "edges": 21372374
+  },
+  "degrees": {
+    "min": 0,
+    "max": 14,
+    "median": 2.0,
+    "average": 2.042385348138807,
+    "distribution": {
+      "9": 39,
+      "2": 9598961,
+      "7": 259,
+      "1": 213178,
+      "3": 432591,
+      "8": 1971,
+      "6": 5572,
+      "0": 60125,
+      "4": 148057,
+      "5": 3363,
+      "10": 268,
+      "12": 31,
+      "14": 3
+    }
+  },
+  "diameter": {
+    "value": 18402,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 0.3333333333333333,
+    "median": 0.0,
+    "average": 0.00035000000000000005,
+    "nodes_calculated": 10000,
+    "total_nodes": 10464418
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 53.450565625
+  }
+}

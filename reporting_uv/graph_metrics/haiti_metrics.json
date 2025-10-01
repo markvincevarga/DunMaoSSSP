@@ -1,0 +1,56 @@
+{
+  "graph_info": {
+    "file_path": "data/haiti.osm.pbf",
+    "vertices": 8497106,
+    "edges": 17186498
+  },
+  "degrees": {
+    "min": 0,
+    "max": 17,
+    "median": 2.0,
+    "average": 2.0226295870617594,
+    "distribution": {
+      "15": 1,
+      "12": 38,
+      "13": 3,
+      "11": 38,
+      "3": 152523,
+      "8": 5562,
+      "17": 1,
+      "5": 1633,
+      "6": 4666,
+      "4": 96600,
+      "9": 83,
+      "7": 147,
+      "2": 8073433,
+      "1": 105007,
+      "10": 702,
+      "16": 10,
+      "14": 7,
+      "0": 56652
+    }
+  },
+  "diameter": {
+    "value": 3409,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0007276695526695525,
+    "nodes_calculated": 10000,
+    "total_nodes": 8497106
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 10.9402505
+  }
+}

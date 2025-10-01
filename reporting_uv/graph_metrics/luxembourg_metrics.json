@@ -1,0 +1,56 @@
+{
+  "graph_info": {
+    "file_path": "data/luxembourg.osm.pbf",
+    "vertices": 3916210,
+    "edges": 10664130
+  },
+  "degrees": {
+    "min": 0,
+    "max": 17,
+    "median": 2.0,
+    "average": 2.7230740945965617,
+    "distribution": {
+      "12": 1340,
+      "13": 28,
+      "1": 103308,
+      "11": 317,
+      "4": 805855,
+      "6": 258966,
+      "15": 8,
+      "9": 3754,
+      "3": 110069,
+      "5": 23452,
+      "2": 2372370,
+      "8": 43992,
+      "10": 5993,
+      "14": 727,
+      "17": 2,
+      "16": 13,
+      "0": 169548,
+      "7": 16468
+    }
+  },
+  "diameter": {
+    "value": 2465,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0019496825396825414,
+    "nodes_calculated": 10000,
+    "total_nodes": 3916210
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 20.055207209
+  }
+}

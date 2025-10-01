@@ -1,0 +1,61 @@
+{
+  "graph_info": {
+    "file_path": "data/budapest.osm.pbf",
+    "vertices": 2443154,
+    "edges": 5187404
+  },
+  "degrees": {
+    "min": 0,
+    "max": 23,
+    "median": 2.0,
+    "average": 2.1232406962475556,
+    "distribution": {
+      "20": 5,
+      "3": 131770,
+      "23": 1,
+      "8": 3394,
+      "13": 61,
+      "0": 169678,
+      "11": 46,
+      "21": 1,
+      "2": 1870897,
+      "6": 22026,
+      "7": 1436,
+      "17": 21,
+      "4": 191367,
+      "19": 4,
+      "5": 10685,
+      "14": 312,
+      "1": 40070,
+      "18": 34,
+      "12": 359,
+      "16": 88,
+      "15": 125,
+      "10": 564,
+      "9": 210
+    }
+  },
+  "diameter": {
+    "value": 393,
+    "is_estimated": true,
+    "sample_size": 100,
+    "method": "sampling"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": true,
+    "reason": "Large graph in fast mode"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0029811374736374687,
+    "nodes_calculated": 10000,
+    "total_nodes": 2443154
+  },
+  "execution": {
+    "mode": "FAST",
+    "total_time_seconds": 2.906295083
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "graph_info": {
+    "file_path": "data/gotland.osm.pbf",
+    "vertices": 725852,
+    "edges": 1634818
+  },
+  "degrees": {
+    "min": 0,
+    "max": 11,
+    "median": 2.0,
+    "average": 2.2522745683693093,
+    "distribution": {
+      "1": 9713,
+      "2": 601678,
+      "9": 11,
+      "4": 81261,
+      "0": 7179,
+      "5": 559,
+      "10": 12,
+      "11": 1,
+      "3": 19880,
+      "6": 5164,
+      "7": 96,
+      "8": 298
+    }
+  },
+  "diameter": {
+    "value": 3565,
+    "is_estimated": false,
+    "sample_size": null,
+    "method": "exact"
+  },
+  "average_path_length": {
+    "value": null,
+    "skipped": false,
+    "reason": "Component too small or disconnected"
+  },
+  "clustering": {
+    "min": 0.0,
+    "max": 1.0,
+    "median": 0.0,
+    "average": 0.0009772605666121177,
+    "nodes_calculated": 725852,
+    "total_nodes": 725852
+  },
+  "execution": {
+    "mode": "FULL",
+    "total_time_seconds": 14157.528080792
+  }
+}
