@@ -29,9 +29,6 @@ impl DuanMaoSolverV2 {
     }
 
     pub fn solve(&mut self, source: usize, goal: usize) -> Option<(f64, Vec<usize>)> {
-        if self.graph.vertices < 50_000 || self.graph.edge_count() < 200_000 {
-            return self.dijkstra_fallback(source, goal);
-        }
         self.solve_duan_mao(source, goal)
     }
 
@@ -47,32 +44,6 @@ impl DuanMaoSolverV2 {
         } else {
             Some((self.distances[goal], self.reconstruct_path(source, goal)))
         }
-    }
-
-    fn dijkstra_fallback(&mut self, source: usize, goal: usize) -> Option<(f64, Vec<usize>)> {
-        self.reset_state();
-        self.distances[source] = 0.0;
-        let mut heap = BinaryHeap::new();
-        heap.push(Reverse(VertexDistance::new(source, 0.0)));
-
-        while let Some(Reverse(VertexDistance { vertex, distance })) = heap.pop() {
-            if distance > self.distances[vertex] {
-                continue;
-            }
-            if vertex == goal {
-                return Some((distance, self.reconstruct_path(source, goal)));
-            }
-
-            for edge in &self.graph.edges[vertex] {
-                let new_dist = distance + edge.weight;
-                if new_dist < self.distances[edge.to] {
-                    self.distances[edge.to] = new_dist;
-                    self.predecessors[edge.to] = Some(vertex);
-                    heap.push(Reverse(VertexDistance::new(edge.to, new_dist)));
-                }
-            }
-        }
-        None
     }
 
     fn reset_state(&mut self) {
